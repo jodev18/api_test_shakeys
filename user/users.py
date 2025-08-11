@@ -11,6 +11,7 @@ from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from sqlite_db import Users,session
+from sqlalchemy.exc import IntegrityError
 
 # Configuration
 SECRET_KEY = "d1707adc314494aaf074b94c628a94d9d34b6d72f81a86f08ec4611cbe37b486"
@@ -104,15 +105,20 @@ async def create_user(user: NewUser):
     username = user.user_name
     hashed = hash_password(password=user.password)
 
-    n_user = Users(username=username,pass_hash=hashed)
+    n_user = Users(username=username, pass_hash=hashed)
     session.add(n_user)
-    session.flush()
-    id = n_user.id
-    session.commit()
-
-    nres = NewUserResponse(status="success",user_id=id)
-
-    return nres
+    try:
+        session.flush()
+        id = n_user.id
+        session.commit()
+        nres = NewUserResponse(status="success", user_id=id)
+        return nres
+    except IntegrityError:
+        session.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username already exists"
+        )
 
 @router.post("/login", response_model=LoginUserResponse)
 async def login(user: LoginUser):
