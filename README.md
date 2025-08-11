@@ -66,6 +66,22 @@ Authorization: Bearer <your_token>
 
 The application uses SQLite for data storage. The database file is `provinces.db`.
 
+## Docker
+
+### Building and Running with Docker
+
+1. Build the Docker image:
+```bash
+docker build -t api_test_shakeys .
+```
+
+2. Run the container:
+```bash
+docker run -p 8000:8000 api_test_shakeys
+```
+
+The API will be available at `http://localhost:8000`
+
 ## Contributing
 
 1. Fork the repository
