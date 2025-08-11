@@ -1,4 +1,3 @@
-from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import Optional
 from passlib.context import CryptContext
@@ -6,7 +5,7 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 from jwt import InvalidTokenError
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from sqlite_db import Users,session
