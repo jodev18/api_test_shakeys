@@ -4,14 +4,12 @@ from typing import Optional
 from passlib.context import CryptContext
 
 from datetime import datetime, timedelta, timezone
-from typing import Optional, Dict, Any, List
-import jwt
+from typing import Optional
 from jwt import InvalidTokenError
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from sqlite_db import Users,session
-from sqlalchemy.exc import IntegrityError
 
 # Configuration
 SECRET_KEY = "d1707adc314494aaf074b94c628a94d9d34b6d72f81a86f08ec4611cbe37b486"
@@ -42,18 +40,6 @@ router = APIRouter(
     prefix="/user",
     tags=["User"]
 )
-
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
-    """Create JWT access token"""
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
-    else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
-    
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     """Create JWT access token"""
@@ -105,20 +91,15 @@ async def create_user(user: NewUser):
     username = user.user_name
     hashed = hash_password(password=user.password)
 
-    n_user = Users(username=username, pass_hash=hashed)
+    n_user = Users(username=username,pass_hash=hashed)
     session.add(n_user)
-    try:
-        session.flush()
-        id = n_user.id
-        session.commit()
-        nres = NewUserResponse(status="success", user_id=id)
-        return nres
-    except IntegrityError:
-        session.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Username already exists"
-        )
+    session.flush()
+    id = n_user.id
+    session.commit()
+
+    nres = NewUserResponse(status="success",user_id=id)
+
+    return nres
 
 @router.post("/login", response_model=LoginUserResponse)
 async def login(user: LoginUser):

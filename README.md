@@ -9,14 +9,12 @@ A FastAPI-based REST API with JWT authentication, user management, and geographi
 - Region Management
 - Province Management
 - SQLite Database
-- Redis Caching (Optional)
 
 ## Prerequisites
 
 - Python 3.x
 - uv (Python package installer)
 - SQLite3
-- Redis (Optional)
 
 ## Installation
 
