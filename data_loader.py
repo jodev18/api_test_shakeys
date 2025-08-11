@@ -1,6 +1,7 @@
 
 import requests
 from bs4 import BeautifulSoup
+from sqlalchemy import exists
 from sqlite_db import Regions, Provinces, session
 
 class DataLoader:
@@ -40,8 +41,9 @@ class DataLoader:
     
     def check_data(self):
         # Data present in the database, skip loading
-        regs = session.query(Regions).all()
-        return regs is not None and len(regs) > 0
+        has_data_reg = session.query(exists().where(Regions.id != None)).scalar()
+        has_data_prov = session.query(exists().where(Provinces.id != None)).scalar()
+        return has_data_reg and has_data_prov
 
     def load_data(self):
         region_downloaded = self.__download_info()

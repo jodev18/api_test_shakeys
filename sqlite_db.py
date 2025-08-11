@@ -28,6 +28,16 @@ class Provinces(Base):
 
     def __repr__(self):
         return f"<Provinces(id={self.id}, name='{self.region_name}', created_at={self.created_at}, modified_at={self.modified_at}, region_id={self.region_id})>"
+    
+class Users(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    username = Column(String, nullable=False, unique=True)
+    pass_hash = Column(String, nullable=False)
+
+    def __repr__(self):
+        return f"<Users(id={self.id}, username='{self.username}', pass_hash='{self.pass_hash})>"
 
 engine = create_engine("sqlite:///provinces.db", echo=True)
 Base.metadata.create_all(engine)
