@@ -1,9 +1,9 @@
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlite_db import Regions, Provinces, session
+from sqlite_db import Regions, session
 from user.users import get_current_user
 from pydantic import BaseModel
-from typing import Optional, Dict, Any, List
+from typing import Optional
 from sqlalchemy.exc import IntegrityError
 
 class CreateRegion(BaseModel):
