@@ -4,6 +4,7 @@ from passlib.context import CryptContext
 
 from datetime import datetime, timedelta, timezone
 from typing import Optional
+import jwt
 from jwt import InvalidTokenError
 from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
